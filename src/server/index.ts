@@ -14,11 +14,11 @@ server.get('/', (req: Request, res: Response) => {
 });
 
 // Serve documentation
-// server.use(
-//   '/docs',
-//   swaggerUi.serve,
-//   swaggerUi.setup(swaggerDocument)
-// );
+server.use(
+  '/docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument)
+);
 
 server.use('/api', rootRouter);
 

@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import authRouter from './auth.routes';
 import kataRouter from './kata.routes';
+import userRouter from './user.routes';
 
 // For the home page from API (http://localhost:3000)
 const homeRouter = express.Router();
@@ -20,5 +21,6 @@ rootRouter.use(cors());
 rootRouter.use('/', homeRouter);
 rootRouter.use('/auth', authRouter);
 rootRouter.use('/katas', kataRouter);
+rootRouter.use('/users', userRouter);
 
 export default rootRouter;

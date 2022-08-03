@@ -1,0 +1,508 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"UserSchema": {
+				"description": "Interface containing name, email, password, age, katas and role",
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					},
+					"age": {
+						"type": "number",
+						"format": "double"
+					},
+					"katas": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"role": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"email",
+					"password",
+					"age",
+					"katas",
+					"role"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AuthSchema": {
+				"properties": {
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"email",
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "open-katas-back",
+		"version": "0.0.1",
+		"license": {
+			"name": "MIT"
+		},
+		"contact": {}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/api/auth/register": {
+			"post": {
+				"operationId": "RegisterUsers",
+				"responses": {
+					"200": {
+						"description": "Object with response status and confirmation or error message",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to register new User",
+				"tags": [
+					"AuthController"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"description": "User Data to register (name + email + password + age + katas + role)",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserSchema",
+								"description": "User Data to register (name + email + password + age + katas + role)"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/auth/login": {
+			"post": {
+				"operationId": "LoginUsers",
+				"responses": {
+					"200": {
+						"description": "Object with response status, User found and Token signed or response status and error message",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to login",
+				"tags": [
+					"AuthController"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"description": "User data to login (email + password)",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AuthSchema",
+								"description": "User data to login (email + password)"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/katas": {
+			"get": {
+				"operationId": "GetKatas",
+				"responses": {
+					"200": {
+						"description": "Object with response status and Katas found (or kata by ID) or error message.",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to get all Katas (or one by ID)",
+				"tags": [
+					"KataController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Page to retrieve",
+						"in": "query",
+						"name": "page",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Limits the number of Katas retrieved",
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Kata ID to retrieve",
+						"in": "query",
+						"name": "kataId",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Filter that will be applied",
+						"in": "query",
+						"name": "filter",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Sort that will be applied (ex: name_asc or name_des)",
+						"in": "query",
+						"name": "sortType",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteKata",
+				"responses": {
+					"200": {
+						"description": "Object with response status and confirmation or error message",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to delete Kata by ID",
+				"tags": [
+					"KataController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Kata ID to delete",
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateKatas",
+				"responses": {
+					"200": {
+						"description": "Object with status response and confirmation or error message",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to create Kata",
+				"tags": [
+					"KataController"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"description": "Kata object to create",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"description": "Kata object to create"
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"operationId": "UpdateKatas",
+				"responses": {
+					"200": {
+						"description": "Object with response status and confirmation or error message",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to update Kata by ID",
+				"tags": [
+					"KataController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Kata ID to update",
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Kata object with data updated",
+						"in": "query",
+						"name": "kata",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/katas/vote": {
+			"put": {
+				"operationId": "VoteKatas",
+				"responses": {
+					"200": {
+						"description": "Object with response status and confirmation or error message",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to vote for Kata by ID",
+				"tags": [
+					"KataController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Kata ID to vote",
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "Valoration provided by User",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "number",
+								"format": "double",
+								"description": "Valoration provided by User"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/katas/solve": {
+			"put": {
+				"operationId": "SolveKatas",
+				"responses": {
+					"200": {
+						"description": "Object with response status and confirmation or error message",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to solve Kata",
+				"tags": [
+					"KataController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Kata ID to solve",
+						"in": "query",
+						"name": "kataId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/users": {
+			"get": {
+				"operationId": "GetUsers",
+				"responses": {
+					"200": {
+						"description": "Object with response status and data retreived / message error",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to Get Users (includes pagination)",
+				"tags": [
+					"UserController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Page that is requested",
+						"in": "query",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Number of users that is going to be retreived",
+						"in": "query",
+						"name": "limit",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "User ID to retreive",
+						"in": "query",
+						"name": "id",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteUser",
+				"responses": {
+					"200": {
+						"description": "Object with the response status and confirmation / error message",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to delete User by ID",
+				"tags": [
+					"UserController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "User ID to delete",
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateUsers",
+				"responses": {
+					"200": {
+						"description": "Object with the response status and confirmation / error message",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to update User by ID",
+				"tags": [
+					"UserController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "User ID to update",
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"description": "Data updated to send",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"description": "Data updated to send"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

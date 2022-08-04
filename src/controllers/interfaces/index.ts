@@ -1,6 +1,3 @@
-import { AuthSchema } from '../../models/interfaces/auth.interface';
-import { UserSchema } from '../../models/interfaces/user.interface';
-
 export interface IUserController {
   getUsers(page: number, limit: number, id?: string): Promise <any>
   deleteUser(id?: string): Promise <any>
@@ -16,6 +13,6 @@ export interface IKataController {
 }
 
 export interface IAuthController {
-  registerUsers(user: UserSchema): Promise <any>
-  loginUsers(auth: AuthSchema): Promise <any>
+  registerUsers(name: string, email: string, password: string, age: number): Promise <any>
+  loginUsers(email: string, password: string): Promise <any>
 }

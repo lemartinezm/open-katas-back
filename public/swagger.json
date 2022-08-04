@@ -6,43 +6,6 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"UserSchema": {
-				"description": "Interface containing name, email, password, age, katas and role",
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"email": {
-						"type": "string"
-					},
-					"password": {
-						"type": "string"
-					},
-					"age": {
-						"type": "number",
-						"format": "double"
-					},
-					"katas": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
-					"role": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"name",
-					"email",
-					"password",
-					"age",
-					"katas",
-					"role"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"AuthSchema": {
 				"properties": {
 					"email": {
@@ -92,13 +55,36 @@
 				"security": [],
 				"parameters": [],
 				"requestBody": {
-					"description": "User Data to register (name + email + password + age + katas + role)",
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/UserSchema",
-								"description": "User Data to register (name + email + password + age + katas + role)"
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "Name to register"
+									},
+									"email": {
+										"type": "string",
+										"description": "Email"
+									},
+									"password": {
+										"type": "string",
+										"description": "Password"
+									},
+									"age": {
+										"type": "number",
+										"format": "double",
+										"description": "Age"
+									}
+								},
+								"required": [
+									"name",
+									"email",
+									"password",
+									"age"
+								],
+								"type": "object"
 							}
 						}
 					}

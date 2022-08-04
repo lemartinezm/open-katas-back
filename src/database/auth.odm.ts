@@ -66,16 +66,7 @@ export const loginUser = async (auth: AuthSchema): Promise <any> => {
     return {
       status: 200,
       message: `Welcome ${userFound?.name}`,
-      token,
-      user: {
-        _id: userFound?._id,
-        name: userFound?.name,
-        email: userFound?.email,
-        katas: userFound?.katas,
-        role: userFound?.role
-      },
-      loggedUserId: userFound?._id,
-      admin: await isAdmin(userFound!._id.toString())
+      token
     };
   } catch (error) {
     LogError(`[ORM ERROR] ${error}`);

@@ -6,18 +6,21 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"AuthSchema": {
+			"AuthResponse": {
 				"properties": {
-					"email": {
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"message": {
 						"type": "string"
 					},
-					"password": {
+					"token": {
 						"type": "string"
 					}
 				},
 				"required": [
-					"email",
-					"password"
+					"status"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -39,11 +42,39 @@
 			"post": {
 				"operationId": "RegisterUsers",
 				"responses": {
-					"200": {
-						"description": "Object with response status and confirmation or error message",
+					"201": {
+						"description": "User registered successfully",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {
+									"$ref": "#/components/schemas/AuthResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 201,
+											"message": "User registered successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "User registration failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AuthResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
 							}
 						}
 					}
@@ -62,7 +93,7 @@
 								"properties": {
 									"name": {
 										"type": "string",
-										"description": "Name to register"
+										"description": "Name"
 									},
 									"email": {
 										"type": "string",
@@ -96,10 +127,39 @@
 				"operationId": "LoginUsers",
 				"responses": {
 					"200": {
-						"description": "Object with response status, User found and Token signed or response status and error message",
+						"description": "User logged successflully",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {
+									"$ref": "#/components/schemas/AuthResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "Welcome User",
+											"token": "tokenExample"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AuthResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
 							}
 						}
 					}
@@ -111,13 +171,25 @@
 				"security": [],
 				"parameters": [],
 				"requestBody": {
-					"description": "User data to login (email + password)",
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/AuthSchema",
-								"description": "User data to login (email + password)"
+								"properties": {
+									"email": {
+										"type": "string",
+										"description": "Email"
+									},
+									"password": {
+										"type": "string",
+										"description": "Password"
+									}
+								},
+								"required": [
+									"email",
+									"password"
+								],
+								"type": "object"
 							}
 						}
 					}

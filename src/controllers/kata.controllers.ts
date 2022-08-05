@@ -1,8 +1,13 @@
-import { BodyProp, Delete, Get, Inject, Post, Put, Query, Route, Tags } from 'tsoa';
+import { BodyProp, Delete, Example, Get, Inject, Post, Put, Query, Response, Route, SuccessResponse, Tags } from 'tsoa';
 import { getKataById, createKata, deleteKataById, getAllKatas, solveKata, updateKata, voteKata } from '../database/kata.odm';
 import { LogInfo, LogSuccess, LogWarning } from '../utils/Logger';
 import { KatasResponse } from '../utils/Responses';
 import { IKataController } from './interfaces';
+
+const errorExample = {
+  status: 400,
+  message: 'Something went wrong'
+};
 
 @Route('/api/katas')
 @Tags('KataController')
@@ -13,11 +18,34 @@ export class KataController implements IKataController {
    * @param {number} page Page to retrieve
    * @param {number} limit Limits the number of Katas retrieved
    * @param {string} kataId Kata ID to retrieve
-   * @param {Object} filter Filter that will be applied
-   * @param {Object} sortType Sort that will be applied (ex: name_asc or name_des)
-   * @returns Object with response status and Katas found (or kata by ID) or error message.
+   * @param {string} level Kata level
+   * @param {string} language Kata language
+   * @param {string} sortType Sort that will be applied (ex: name_asc or name_des)
+   * @returns {KatasResponse} Object with response status and Katas found (or kata by ID) or error message.
    */
   @Get('/')
+  @SuccessResponse(200, 'Katas obtained successfully')
+  @Example(
+    {
+      status: 200,
+      katas: [
+        {
+          _id: '62ed460ed73c1af651554a80',
+          name: 'My name modified',
+          level: 'HARD',
+          stars: 5,
+          creator: '62ead98822cd04870ab7278b',
+          language: 'js',
+          participants: [
+            '62ead98822cd04870ab7278b'
+          ]
+        }
+      ],
+      totalPages: 1,
+      currentPage: 1
+    }
+  )
+  @Response<KatasResponse>(400, 'Something went wrong', errorExample)
   public async getKatas (
     @Inject() loggedUserId: string,
     @Query() page: number,
@@ -63,9 +91,15 @@ export class KataController implements IKataController {
    * @param {string} id Kata ID to delete
    * @param {string} loggedUserId Logged User ID
    * @param {boolean} isAdmin Boolean specifying if user has admin role
-   * @returns Object with response status and confirmation or error message
+   * @returns {KatasResponse} Object with response status and confirmation or error message
    */
   @Delete('/')
+  @SuccessResponse(200, 'Kata deleted successfully')
+  @Example({
+    status: 200,
+    message: 'Kata deleted successfully'
+  })
+  @Response<KatasResponse>(400, 'Something went wrong', errorExample)
   public async deleteKata (
     @Query() id: string,
     @Inject() loggedUserId: string,
@@ -83,11 +117,21 @@ export class KataController implements IKataController {
 
   /**
    * Endpoint to create Kata
-   * @param {Object} kata Kata object to create
-   * @param {string} loggedUserId Logged User ID
-   * @returns Object with status response and confirmation or error message
+   * @param {string} name Name
+   * @param {string} description Description
+   * @param {string} level Level
+   * @param {string} creator Creator ID
+   * @param {string} language Language
+   * @param {string} solution Solution
+   * @returns {KatasResponse} Object with status response and confirmation or error message
    */
   @Post('/')
+  @SuccessResponse(201, 'Kata created successfully')
+  @Example({
+    status: 201,
+    message: 'Kata created successfully'
+  })
+  @Response<KatasResponse>(400, 'Something went wrong', errorExample)
   public async createKatas (
     @BodyProp('name') name: string,
     @BodyProp('description') description: string,
@@ -124,10 +168,20 @@ export class KataController implements IKataController {
    * @param {string} kataId Kata ID to update
    * @param {string} loggedUserId Logged User ID
    * @param {boolean} isAdmin Boolean specifying if user has admin role
-   * @param {Object} kata Kata object with data updated
-   * @returns Object with response status and confirmation or error message
+   * @param {string} name Name
+   * @param {string} description Description
+   * @param {string} level Level
+   * @param {string} language Language
+   * @param {string} solution Solution
+   * @returns {KatasResponse} Object with response status and confirmation or error message
    */
   @Put('/')
+  @SuccessResponse(200, 'Kata updated successfully')
+  @Example({
+    status: 200,
+    message: 'Kata updated successfully'
+  })
+  @Response<KatasResponse>(400, 'Something went wrong', errorExample)
   public async updateKatas (
     @Query() kataId: string,
     @Inject() loggedUserId: string,
@@ -159,6 +213,12 @@ export class KataController implements IKataController {
    * @returns Object with response status and confirmation or error message
    */
   @Put('/vote')
+  @SuccessResponse(200, 'Kata voted successfully')
+  @Example({
+    status: 200,
+    message: 'Vote for kata completed'
+  })
+  @Response<KatasResponse>(400, 'Something went wrong', errorExample)
   public async voteKatas (
     @Inject() loggedUserId: string,
     @Query() kataId: string,
@@ -182,6 +242,12 @@ export class KataController implements IKataController {
    * @returns Object with response status and confirmation or error message
    */
   @Put('/solve')
+  @SuccessResponse(200, 'Kata solved successfully')
+  @Example({
+    status: 200,
+    message: 'Kata solved successfully'
+  })
+  @Response<KatasResponse>(400, 'Something went wrong', errorExample)
   public async solveKatas (
     @Query() kataId: string,
     @Inject() loggedUserId: string,

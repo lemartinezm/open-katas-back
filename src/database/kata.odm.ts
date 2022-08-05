@@ -117,7 +117,6 @@ export const deleteKataById = async (id: string, loggedUserId: string, isAdmin: 
 /**
  * Method to create a Kata
  * @param {Object} kata Kata object with values to create new Kata
- * @param {string} loggedUserId Logged User ID that is trying to create a Kata
  * @returns Object with status response and confirmation or error message
  */
 export const createKata = async (kata: any): Promise<KatasResponse> => {
@@ -233,7 +232,7 @@ export const solveKata = async (kataId: string, loggedUserId: string) => {
           $push: { participants: loggedUserId }
         });
         response.status = 200;
-        response.message = 'Kata tried successfully';
+        response.message = 'Kata solved successfully';
       } else {
         throw new Error('Kata not found');
       }

@@ -241,11 +241,51 @@
 				"operationId": "GetKatas",
 				"responses": {
 					"200": {
-						"description": "Object with response status and Katas found (or kata by ID) or error message.",
+						"description": "Katas obtained successfully",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/KatasResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"katas": [
+												{
+													"_id": "62ed460ed73c1af651554a80",
+													"name": "My name modified",
+													"level": "HARD",
+													"stars": 5,
+													"creator": "62ead98822cd04870ab7278b",
+													"language": "js",
+													"participants": [
+														"62ead98822cd04870ab7278b"
+													]
+												}
+											],
+											"totalPages": 1,
+											"currentPage": 1
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KatasResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
 								}
 							}
 						}
@@ -287,6 +327,7 @@
 						}
 					},
 					{
+						"description": "Kata level",
 						"in": "query",
 						"name": "level",
 						"required": false,
@@ -295,6 +336,7 @@
 						}
 					},
 					{
+						"description": "Kata language",
 						"in": "query",
 						"name": "language",
 						"required": false,
@@ -317,11 +359,37 @@
 				"operationId": "DeleteKata",
 				"responses": {
 					"200": {
-						"description": "Object with response status and confirmation or error message",
+						"description": "Kata deleted successfully",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/KatasResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "Kata deleted successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KatasResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
 								}
 							}
 						}
@@ -347,12 +415,38 @@
 			"post": {
 				"operationId": "CreateKatas",
 				"responses": {
-					"200": {
-						"description": "Object with status response and confirmation or error message",
+					"201": {
+						"description": "Kata created successfully",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/KatasResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 201,
+											"message": "Kata created successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KatasResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
 								}
 							}
 						}
@@ -371,19 +465,24 @@
 							"schema": {
 								"properties": {
 									"name": {
-										"type": "string"
+										"type": "string",
+										"description": "Name"
 									},
 									"description": {
-										"type": "string"
+										"type": "string",
+										"description": "Description"
 									},
 									"level": {
-										"type": "string"
+										"type": "string",
+										"description": "Level"
 									},
 									"language": {
-										"type": "string"
+										"type": "string",
+										"description": "Language"
 									},
 									"solution": {
-										"type": "string"
+										"type": "string",
+										"description": "Solution"
 									}
 								},
 								"required": [
@@ -403,11 +502,37 @@
 				"operationId": "UpdateKatas",
 				"responses": {
 					"200": {
-						"description": "Object with response status and confirmation or error message",
+						"description": "Kata updated successfully",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/KatasResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "Kata updated successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KatasResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
 								}
 							}
 						}
@@ -436,19 +561,24 @@
 							"schema": {
 								"properties": {
 									"name": {
-										"type": "string"
+										"type": "string",
+										"description": "Name"
 									},
 									"description": {
-										"type": "string"
+										"type": "string",
+										"description": "Description"
 									},
 									"level": {
-										"type": "string"
+										"type": "string",
+										"description": "Level"
 									},
 									"language": {
-										"type": "string"
+										"type": "string",
+										"description": "Language"
 									},
 									"solution": {
-										"type": "string"
+										"type": "string",
+										"description": "Solution"
 									}
 								},
 								"required": [
@@ -470,10 +600,36 @@
 				"operationId": "VoteKatas",
 				"responses": {
 					"200": {
-						"description": "Object with response status and confirmation or error message",
+						"description": "Kata voted successfully",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "Vote for kata completed"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KatasResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
 							}
 						}
 					}
@@ -501,10 +657,36 @@
 				"operationId": "SolveKatas",
 				"responses": {
 					"200": {
-						"description": "Object with response status and confirmation or error message",
+						"description": "Kata solved successfully",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "Kata solved successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/KatasResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
 							}
 						}
 					}

@@ -9,10 +9,7 @@ export const kataEntity = () => {
       level: { type: String, required: true },
       intents: { type: Number, required: true },
       stars: { type: Number, required: true },
-      creator: {
-        creatorId: { type: mongoose.Schema.Types.ObjectId, required: true },
-        creatorName: { type: String, required: true }
-      },
+      creator: { type: mongoose.Schema.Types.ObjectId, required: true },
       language: { type: String, required: true },
       solution: { type: String, required: true },
       participants: { type: [mongoose.Schema.Types.ObjectId], required: true },

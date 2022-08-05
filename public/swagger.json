@@ -25,6 +25,26 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"KatasResponse": {
+				"properties": {
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"message": {
+						"type": "string"
+					},
+					"katas": {
+						"items": {},
+						"type": "array"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"UsersResponse": {
 				"properties": {
 					"status": {
@@ -224,7 +244,9 @@
 						"description": "Object with response status and Katas found (or kata by ID) or error message.",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {
+									"$ref": "#/components/schemas/KatasResponse"
+								}
 							}
 						}
 					}
@@ -239,7 +261,7 @@
 						"description": "Page to retrieve",
 						"in": "query",
 						"name": "page",
-						"required": false,
+						"required": true,
 						"schema": {
 							"format": "double",
 							"type": "number"
@@ -249,7 +271,7 @@
 						"description": "Limits the number of Katas retrieved",
 						"in": "query",
 						"name": "limit",
-						"required": false,
+						"required": true,
 						"schema": {
 							"format": "double",
 							"type": "number"
@@ -265,9 +287,16 @@
 						}
 					},
 					{
-						"description": "Filter that will be applied",
 						"in": "query",
-						"name": "filter",
+						"name": "level",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "language",
 						"required": false,
 						"schema": {
 							"type": "string"
@@ -291,7 +320,9 @@
 						"description": "Object with response status and confirmation or error message",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {
+									"$ref": "#/components/schemas/KatasResponse"
+								}
 							}
 						}
 					}
@@ -320,7 +351,9 @@
 						"description": "Object with status response and confirmation or error message",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {
+									"$ref": "#/components/schemas/KatasResponse"
+								}
 							}
 						}
 					}
@@ -332,12 +365,35 @@
 				"security": [],
 				"parameters": [],
 				"requestBody": {
-					"description": "Kata object to create",
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"description": "Kata object to create"
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"level": {
+										"type": "string"
+									},
+									"language": {
+										"type": "string"
+									},
+									"solution": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"name",
+									"description",
+									"level",
+									"language",
+									"solution"
+								],
+								"type": "object"
 							}
 						}
 					}
@@ -350,7 +406,9 @@
 						"description": "Object with response status and confirmation or error message",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {
+									"$ref": "#/components/schemas/KatasResponse"
+								}
 							}
 						}
 					}
@@ -364,22 +422,47 @@
 					{
 						"description": "Kata ID to update",
 						"in": "query",
-						"name": "id",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"description": "Kata object with data updated",
-						"in": "query",
-						"name": "kata",
+						"name": "kataId",
 						"required": true,
 						"schema": {
 							"type": "string"
 						}
 					}
-				]
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"description": {
+										"type": "string"
+									},
+									"level": {
+										"type": "string"
+									},
+									"language": {
+										"type": "string"
+									},
+									"solution": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"name",
+									"description",
+									"level",
+									"language",
+									"solution"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/api/katas/vote": {
@@ -404,26 +487,13 @@
 					{
 						"description": "Kata ID to vote",
 						"in": "query",
-						"name": "id",
+						"name": "kataId",
 						"required": true,
 						"schema": {
 							"type": "string"
 						}
 					}
-				],
-				"requestBody": {
-					"description": "Valoration provided by User",
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "number",
-								"format": "double",
-								"description": "Valoration provided by User"
-							}
-						}
-					}
-				}
+				]
 			}
 		},
 		"/api/katas/solve": {

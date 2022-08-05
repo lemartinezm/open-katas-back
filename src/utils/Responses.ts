@@ -10,3 +10,7 @@ export interface AuthResponse extends BasicResponse {
 export interface UsersResponse extends BasicResponse {
   users?: Array<any>
 }
+
+export interface KatasResponse extends BasicResponse {
+  katas?: Array<any>
+}

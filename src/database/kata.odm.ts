@@ -2,6 +2,7 @@ import { IKataFound } from '../models/interfaces/kata.interface';
 import { kataEntity } from '../models/schemas/kata';
 import { userEntity } from '../models/schemas/user';
 import { LogError, LogInfo } from '../utils/Logger';
+import { KatasResponse } from '../utils/Responses';
 
 /**
  * Method to get Katas with pagination, limit, filter and sort type
@@ -15,7 +16,7 @@ export const getAllKatas = async (
   page: number,
   limit: number,
   filter?: any,
-  sortType?: any): Promise<any[] | undefined> => {
+  sortType?: any): Promise<KatasResponse> => {
   const response: any = {};
   try {
     const kataModel = kataEntity();
@@ -55,13 +56,14 @@ export const getAllKatas = async (
  * @param {string} loggedUserId Logged User ID that is trying to get the Kata
  * @returns Object with response status and Kata found or error message.
  */
-export const getKataById = async (kataId: string, loggedUserId: any): Promise<any> => {
+export const getKataById = async (kataId: string, loggedUserId: any): Promise<KatasResponse> => {
   const response: any = {};
   try {
     const kataModel = kataEntity();
     await kataModel.findById(kataId).then((kata: IKataFound) => {
       if (kata) {
         // Verify if user tried the Kata before to send solution or send kata without solution
+        // TODO: use projections for this
         if (kata.participants.includes(loggedUserId)) {
           response.status = 200;
           response.kata = kata;
@@ -90,12 +92,12 @@ export const getKataById = async (kataId: string, loggedUserId: any): Promise<an
  * @param {boolean} isAdmin Boolean specifying if user has admin role
  * @returns Object with response status and confirmation or error message
  */
-export const deleteKataById = async (id: string, loggedUserId: string, isAdmin: boolean) => {
+export const deleteKataById = async (id: string, loggedUserId: string, isAdmin: boolean): Promise<KatasResponse> => {
   const response: any = {};
   try {
     const kataModel = kataEntity();
     await kataModel.findById(id).then(async (kataFound: IKataFound) => {
-      if (loggedUserId === kataFound.creator.creatorId.toString() || isAdmin) {
+      if (loggedUserId === kataFound.creator.toString() || isAdmin) {
         await kataModel.findByIdAndDelete(id).then(() => {
           response.status = 200;
           response.message = `Kata with id ${id} deleted successfully`;
@@ -107,7 +109,7 @@ export const deleteKataById = async (id: string, loggedUserId: string, isAdmin: 
   } catch (error) {
     LogError(`[ORM ERROR] Deleting kata with id ${id}`);
     response.status = 401;
-    response.message = `Error deleting kata. Error: ${error}`;
+    response.message = `Error: ${error}`;
   }
   return response;
 };
@@ -118,16 +120,13 @@ export const deleteKataById = async (id: string, loggedUserId: string, isAdmin: 
  * @param {string} loggedUserId Logged User ID that is trying to create a Kata
  * @returns Object with status response and confirmation or error message
  */
-export const createKata = async (kata: any, loggedUserId: string) => {
+export const createKata = async (kata: any): Promise<KatasResponse> => {
   const response: any = {};
   try {
     const kataModel = kataEntity();
     const userModel = userEntity();
-    await userModel.findById(loggedUserId).then((user) => {
-      kata.creator.creatorName = user.name;
-    });
     await kataModel.create(kata).then(async (kataCreated) => {
-      await userModel.findByIdAndUpdate(loggedUserId, {
+      await userModel.findByIdAndUpdate(kata.creator, {
         $push: { katas: kataCreated._id }
       });
       response.status = 201;
@@ -156,7 +155,7 @@ export const updateKata = async (id: string, loggedUserId: string, isAdmin: bool
 
     await kataModel.findById(id).then(async (kataFound: IKataFound) => {
       // Proceed if the user is the kata creator or has admin role
-      if (loggedUserId === kataFound.creator.creatorId.toString() || isAdmin) {
+      if (loggedUserId === kataFound.creator.toString() || isAdmin) {
         await kataModel.findByIdAndUpdate(id, kata).then(() => {
           response.status = 200;
           response.message = `Kata with id ${id} updated successfully`;
@@ -206,7 +205,7 @@ export const voteKata = async (loggedUserId: string, id: string, valoration: any
           response.message = `Vote for kata with id ${id} completed`;
         });
       } else {
-        throw new Error('User is not authorized to vote for this Kata because he has not tried the Kata before');
+        throw new Error('Kata not solved before');
       }
     });
   } catch (error) {

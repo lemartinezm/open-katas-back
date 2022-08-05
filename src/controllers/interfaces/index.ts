@@ -1,4 +1,4 @@
-import { UsersResponse } from '../../utils/Responses';
+import { KatasResponse, UsersResponse } from '../../utils/Responses';
 
 export interface IUserController {
   getUsers(page: number, limit: number, id?: string): Promise<UsersResponse>
@@ -7,10 +7,54 @@ export interface IUserController {
 }
 
 export interface IKataController {
-  getKatas(loggedUserId: string, page?: number, limit?: number, id?: string, filter?: any, sortType?: string): Promise<any>
-  deleteKata(id: string, loggedUserId: string, isAdmin: boolean): Promise<any>
-  createKatas(kata: any, loggedUserId: string): Promise<any>
-  updateKatas(id: string, loggedUserId: string, isAdmin: boolean, kata: any): Promise<any>
+  getKatas(
+    loggedUserId: string,
+    page: number,
+    limit: number,
+    id?: string,
+    level?: string,
+    language?: string,
+    sortType?: string
+  ): Promise<KatasResponse>
+
+  deleteKata(
+    id: string,
+    loggedUserId: string,
+    isAdmin: boolean
+  ): Promise<KatasResponse>
+
+  createKatas(
+    name: string,
+    description: string,
+    level: string,
+    creator: string,
+    language: string,
+    solution: string,
+  ): Promise<KatasResponse>
+
+  updateKatas(
+    id: string,
+    loggedUserId: string,
+    isAdmin: boolean,
+    name: string,
+    description: string,
+    level: string,
+    creator: string,
+    language: string,
+    solution: string
+  ): Promise<KatasResponse>
+
+  voteKatas(
+    loggedUserId: string,
+    kataId: string,
+    valoration: number
+  ): Promise<KatasResponse>
+
+  solveKatas(
+    kataId: string,
+    loggedUserId: string,
+    solution: string
+  ): Promise<KatasResponse>
 }
 
 export interface IAuthController {

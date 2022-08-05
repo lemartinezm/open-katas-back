@@ -24,6 +24,26 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"UsersResponse": {
+				"properties": {
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"message": {
+						"type": "string"
+					},
+					"users": {
+						"items": {},
+						"type": "array"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -442,10 +462,58 @@
 				"operationId": "GetUsers",
 				"responses": {
 					"200": {
-						"description": "Object with response status and data retreived / message error",
+						"description": "Users obtained successfully",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"users": [
+												{
+													"_id": "62ead98822cd04870ab7278b",
+													"name": "Martín",
+													"email": "martin@email.com",
+													"age": 30,
+													"katas": [
+														"62eae045d5c645439b3a026a",
+														"62eaf1e8946b8624a7901072"
+													]
+												},
+												{
+													"_id": "62ed2ef188b1ccf16afb5d89",
+													"name": "Jorge",
+													"email": "jorge@email.com",
+													"age": 30,
+													"katas": []
+												}
+											],
+											"totalPages": 1,
+											"currentPage": 1
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
 							}
 						}
 					}
@@ -491,10 +559,38 @@
 				"operationId": "DeleteUser",
 				"responses": {
 					"200": {
-						"description": "Object with the response status and confirmation / error message",
+						"description": "User deleted successfully",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "User deleted successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
 							}
 						}
 					}
@@ -520,10 +616,36 @@
 				"operationId": "UpdateUsers",
 				"responses": {
 					"200": {
-						"description": "Object with the response status and confirmation / error message",
+						"description": "User updated successfully",
 						"content": {
 							"application/json": {
-								"schema": {}
+								"schema": {},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "User updated successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
 							}
 						}
 					}
@@ -545,12 +667,31 @@
 					}
 				],
 				"requestBody": {
-					"description": "Data updated to send",
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"description": "Data updated to send"
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "Name"
+									},
+									"email": {
+										"type": "string",
+										"description": "Email"
+									},
+									"age": {
+										"type": "number",
+										"format": "double",
+										"description": "Age"
+									}
+								},
+								"required": [
+									"name",
+									"email",
+									"age"
+								],
+								"type": "object"
 							}
 						}
 					}

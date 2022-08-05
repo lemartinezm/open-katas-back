@@ -23,75 +23,21 @@ userRouter.route('/')
   // * Delete user by ID only if you're admin
   .delete(verifyToken, verifyAdmin, async (req: Request, res: Response) => {
     const isAdmin: boolean = res.locals.isAdmin;
+    const id: any = req?.query?.id;
 
-    if (isAdmin) {
-      // Query Params
-      const id: any = req?.query?.id;
-      if (id) {
-        const controller: UserController = new UserController();
-        const response: any = await controller.deleteUser(id);
-        return res.status(response.status).send(response);
-      } else {
-        return res.status(400).send({
-          message: 'No User ID Found to delete'
-        });
-      }
-    } else {
-      return res.status(401).send({
-        message: 'You\'re not authorized to perform this action'
-      });
-    }
+    const controller: UserController = new UserController();
+    const response: any = await controller.deleteUser(id, isAdmin);
+    return res.status(response.status).send(response);
   })
 
   // * Update user only if you're admin
   .put(verifyToken, verifyAdmin, async (req: Request, res: Response) => {
     const isAdmin: boolean = res.locals.isAdmin;
+    const id: any = req?.query?.id;
+    const { name, email, age } = req?.body;
 
-    if (isAdmin) {
-      const id: any = req?.query?.id;
-      if (id) {
-        // Body params
-        const name: any = req?.body?.name;
-        const email: any = req?.body?.email;
-        const age: any = req?.body?.age;
-
-        const controller = new UserController();
-        const response = await controller.updateUsers(id, {
-          name,
-          email,
-          age
-        });
-        return res.status(200).send(response);
-      } else {
-        return res.status(400).send({
-          message: 'No User ID found to update'
-        });
-      }
-    } else {
-      return res.status(401).send({
-        message: 'You\'re not authorized to perform this action'
-      });
-    }
-  });
-
-// * Get Katas from User
-userRouter.route('/katas')
-  .get(verifyToken, async (req: Request, res: Response) => {
-    // Query Param
-    const id: any = req?.query?.id || res.locals.userId;
-    const page: any = req?.query?.page || 1;
-    const limit: any = req?.query?.limit || 10;
-    let response: any = {};
-
-    if (id) {
-      const controller: UserController = new UserController();
-      response = await controller.getKatas(page, limit, id);
-    } else {
-      response = {
-        status: 400,
-        message: 'Please, provide an ID to retreive the katas'
-      };
-    }
+    const controller = new UserController();
+    const response = await controller.updateUsers(id, isAdmin, name, email, age);
     return res.status(response.status).send(response);
   });
 

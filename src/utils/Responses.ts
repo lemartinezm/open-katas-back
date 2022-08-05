@@ -6,3 +6,7 @@ export interface BasicResponse {
 export interface AuthResponse extends BasicResponse {
   token?: string
 }
+
+export interface UsersResponse extends BasicResponse {
+  users?: Array<any>
+}

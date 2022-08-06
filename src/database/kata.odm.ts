@@ -6,21 +6,23 @@ import { KatasResponse } from '../utils/Responses';
 
 /**
  * Method to get Katas with pagination, limit, filter and sort type
- * @param {number} page Page to retreive
- * @param {number} limit Number of Katas that will be retreived
+ * @param {number} currentPage Page to retreive
+ * @param {number} documentsPerPage Number of Katas that will be retreived
  * @param {Object} filter Filter that will be applied
  * @param {Object} sortType Sort type that will be applied
- * @returns Object with response status and Katas found or error message
+ * @returns {KatasResponse} Object with response status and Katas found or error message
  */
 export const getAllKatas = async (
-  page: number,
-  limit: number,
+  currentPage: number,
+  documentsPerPage: number,
   filter?: any,
   sortType?: any): Promise<KatasResponse> => {
-  const response: any = {};
+  const response: KatasResponse = {
+    status: 400
+  };
   try {
     const kataModel = kataEntity();
-    let steps: any = '';
+    let steps: any = null;
     // Apply filters
     if (filter) {
       steps = kataModel.find(filter, { name: 1, level: 1, stars: 1, creator: 1, language: 1, participants: 1 });
@@ -31,16 +33,20 @@ export const getAllKatas = async (
       steps = steps.sort(sortType);
     }
     // Pagination
-    steps = steps.limit(limit).skip((page - 1) * limit);
+    steps = steps.limit(documentsPerPage).skip((currentPage - 1) * documentsPerPage);
     // Execution
-    await steps.then((katas: any) => {
+    await steps.then((katas: IKataFound[]) => {
       response.status = 200;
       response.katas = katas;
     });
     // Add total pages and current page to the response
-    await kataModel.countDocuments().then((total: number) => {
-      response.totalPages = Math.ceil(total / limit);
-      response.currentPage = page;
+    await kataModel.countDocuments().then((totalDocuments: number) => {
+      response.meta = {
+        totalPages: Math.ceil(totalDocuments / documentsPerPage),
+        currentPage,
+        documentsPerPage,
+        totalDocuments
+      };
     });
   } catch (error) {
     response.status = 400;
@@ -54,10 +60,10 @@ export const getAllKatas = async (
  * Method to get Kata by ID
  * @param {string} kataId Kata ID to retrieve
  * @param {string} loggedUserId Logged User ID that is trying to get the Kata
- * @returns Object with response status and Kata found or error message.
+ * @returns {KatasResponse} Object with response status and Kata found or error message.
  */
 export const getKataById = async (kataId: string, loggedUserId: any): Promise<KatasResponse> => {
-  const response: any = {};
+  const response: KatasResponse = { status: 400 };
   try {
     const kataModel = kataEntity();
     await kataModel.findById(kataId).then((kata: IKataFound) => {
@@ -66,11 +72,11 @@ export const getKataById = async (kataId: string, loggedUserId: any): Promise<Ka
         // TODO: use projections for this
         if (kata.participants.includes(loggedUserId)) {
           response.status = 200;
-          response.kata = kata;
+          response.katas = [kata];
         } else {
           kata.solution = '';
           response.status = 200;
-          response.kata = kata;
+          response.katas = [kata];
         }
       } else {
         response.status = 404;
@@ -90,10 +96,10 @@ export const getKataById = async (kataId: string, loggedUserId: any): Promise<Ka
  * @param {string} id Kata ID to delete
  * @param {string} loggedUserId Logged User ID that is trying to delete the Kata
  * @param {boolean} isAdmin Boolean specifying if user has admin role
- * @returns Object with response status and confirmation or error message
+ * @returns {KatasResponse} Object with response status and confirmation or error message
  */
 export const deleteKataById = async (id: string, loggedUserId: string, isAdmin: boolean): Promise<KatasResponse> => {
-  const response: any = {};
+  const response: KatasResponse = { status: 400 };
   try {
     const kataModel = kataEntity();
     await kataModel.findById(id).then(async (kataFound: IKataFound) => {
@@ -117,10 +123,10 @@ export const deleteKataById = async (id: string, loggedUserId: string, isAdmin: 
 /**
  * Method to create a Kata
  * @param {Object} kata Kata object with values to create new Kata
- * @returns Object with status response and confirmation or error message
+ * @returns {KatasResponse} Object with status response and confirmation or error message
  */
 export const createKata = async (kata: any): Promise<KatasResponse> => {
-  const response: any = {};
+  const response: KatasResponse = { status: 400 };
   try {
     const kataModel = kataEntity();
     const userModel = userEntity();
@@ -145,10 +151,10 @@ export const createKata = async (kata: any): Promise<KatasResponse> => {
  * @param {string} loggedUserId Logged user ID that is trying to update the Kata
  * @param {boolean} isAdmin Boolean specifying if the user is admin
  * @param {Object} kata Kata object with values updated
- * @returns Object with response status and confirmation or error message
+ * @returns {KatasResponse} Object with response status and confirmation or error message
  */
-export const updateKata = async (id: string, loggedUserId: string, isAdmin: boolean, kata: any) => {
-  const response: any = {};
+export const updateKata = async (id: string, loggedUserId: string, isAdmin: boolean, kata: any): Promise<KatasResponse> => {
+  const response: KatasResponse = { status: 400 };
   try {
     const kataModel = kataEntity();
 

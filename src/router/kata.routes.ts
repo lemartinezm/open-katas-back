@@ -21,7 +21,7 @@ kataRouter.route('/')
     const sortType: any = req?.query?.sortType;
     // Controller
     const controller: KataController = new KataController();
-    const response = await controller.getKatas(loggedUserId, page, limit, kataId, level, language, sortType);
+    const response = await controller.getKatas(loggedUserId, parseInt(page), parseInt(limit), kataId, level, language, sortType);
     return res.status(response.status).send(response);
   })
 

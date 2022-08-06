@@ -1,3 +1,13 @@
+/**
+ * Meta information for pagination
+ */
+export interface Meta {
+  totalPages: number,
+  currentPage: number,
+  totalDocuments: number,
+  documentsPerPage: number
+}
+
 export interface BasicResponse {
   status: number,
   message?: string
@@ -8,9 +18,11 @@ export interface AuthResponse extends BasicResponse {
 }
 
 export interface UsersResponse extends BasicResponse {
-  users?: Array<any>
+  users?: Array<any>,
+  meta?: Meta
 }
 
 export interface KatasResponse extends BasicResponse {
-  katas?: Array<any>
+  katas?: Array<any>,
+  meta?: Meta
 }

@@ -41,8 +41,12 @@ export class KataController implements IKataController {
           ]
         }
       ],
-      totalPages: 1,
-      currentPage: 1
+      meta: {
+        totalPages: 1,
+        currentPage: 1,
+        documentsPerPage: 10,
+        totalDocuments: 1
+      }
     }
   )
   @Response<KatasResponse>(400, 'Something went wrong', errorExample)

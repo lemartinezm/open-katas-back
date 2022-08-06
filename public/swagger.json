@@ -25,6 +25,35 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"Meta": {
+				"description": "Meta information for pagination",
+				"properties": {
+					"totalPages": {
+						"type": "number",
+						"format": "double"
+					},
+					"currentPage": {
+						"type": "number",
+						"format": "double"
+					},
+					"totalDocuments": {
+						"type": "number",
+						"format": "double"
+					},
+					"documentsPerPage": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"totalPages",
+					"currentPage",
+					"totalDocuments",
+					"documentsPerPage"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"KatasResponse": {
 				"properties": {
 					"status": {
@@ -37,6 +66,9 @@
 					"katas": {
 						"items": {},
 						"type": "array"
+					},
+					"meta": {
+						"$ref": "#/components/schemas/Meta"
 					}
 				},
 				"required": [
@@ -57,6 +89,9 @@
 					"users": {
 						"items": {},
 						"type": "array"
+					},
+					"meta": {
+						"$ref": "#/components/schemas/Meta"
 					}
 				},
 				"required": [
@@ -264,8 +299,12 @@
 													]
 												}
 											],
-											"totalPages": 1,
-											"currentPage": 1
+											"meta": {
+												"totalPages": 1,
+												"currentPage": 1,
+												"documentsPerPage": 10,
+												"totalDocuments": 1
+											}
 										}
 									}
 								}

@@ -22,6 +22,7 @@ export const getAllKatas = async (
   };
   try {
     const kataModel = kataEntity();
+    const userModel = userEntity();
     let steps: any = null;
     // Apply filters
     if (filter) {
@@ -35,9 +36,21 @@ export const getAllKatas = async (
     // Pagination
     steps = steps.limit(documentsPerPage).skip((currentPage - 1) * documentsPerPage);
     // Execution
-    await steps.then((katas: IKataFound[]) => {
+    await steps.then(async (katas: IKataFound[]) => {
       response.status = 200;
-      response.katas = katas;
+      response.katas = await Promise.all(
+        katas.map(async (kata) => {
+          return {
+            _id: kata._id,
+            name: kata.name,
+            level: kata.level,
+            stars: kata.stars,
+            creator: await userModel.findById(kata.creator, { _id: 1, name: 1 }),
+            language: kata.language,
+            participants: kata.participants.length
+          };
+        })
+      );
     });
     // Add total pages and current page to the response
     await kataModel.countDocuments().then((totalDocuments: number) => {
@@ -66,18 +79,17 @@ export const getKataById = async (kataId: string, loggedUserId: any): Promise<Ka
   const response: KatasResponse = { status: 400 };
   try {
     const kataModel = kataEntity();
-    await kataModel.findById(kataId).then((kata: IKataFound) => {
+    const userModel = userEntity();
+    await kataModel.findById(kataId).then(async (kata: any) => {
       if (kata) {
         // Verify if user tried the Kata before to send solution or send kata without solution
-        // TODO: use projections for this
-        if (kata.participants.includes(loggedUserId)) {
-          response.status = 200;
-          response.katas = [kata];
-        } else {
-          kata.solution = '';
-          response.status = 200;
-          response.katas = [kata];
-        }
+        if (!kata.participants.includes(loggedUserId)) kata.solution = '';
+        response.status = 200;
+        // TODO: por qué la info se almacena en kata._doc?
+        response.katas = [{
+          ...kata._doc,
+          creator: await userModel.findById(kata.creator, { _id: 1, name: 1, email: 1 })
+        }];
       } else {
         response.status = 404;
         response.message = 'Kata not found';

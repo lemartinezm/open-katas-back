@@ -34,11 +34,12 @@ export class KataController implements IKataController {
           name: 'My name modified',
           level: 'HARD',
           stars: 5,
-          creator: '62ead98822cd04870ab7278b',
+          creator: {
+            _id: '62ead98822cd04870ab7278b',
+            name: 'Martín'
+          },
           language: 'js',
-          participants: [
-            '62ead98822cd04870ab7278b'
-          ]
+          participants: 1
         }
       ],
       meta: {

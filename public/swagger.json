@@ -292,11 +292,12 @@
 													"name": "My name modified",
 													"level": "HARD",
 													"stars": 5,
-													"creator": "62ead98822cd04870ab7278b",
+													"creator": {
+														"_id": "62ead98822cd04870ab7278b",
+														"name": "Martín"
+													},
 													"language": "js",
-													"participants": [
-														"62ead98822cd04870ab7278b"
-													]
+													"participants": 1
 												}
 											],
 											"meta": {
@@ -987,6 +988,64 @@
 						}
 					}
 				}
+			}
+		},
+		"/api/users/me": {
+			"get": {
+				"operationId": "GetMyInfo",
+				"responses": {
+					"200": {
+						"description": "User info obtained successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"user": {
+												"_id": "62ead98822cd04870ab7278b",
+												"name": "Martín",
+												"email": "martin@email.com",
+												"age": 30,
+												"katas": [
+													"62eae045d5c645439b3a026a",
+													"62eaf1e8946b8624a7901072"
+												]
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to get logged user info",
+				"tags": [
+					"UserController"
+				],
+				"security": [],
+				"parameters": []
 			}
 		}
 	},

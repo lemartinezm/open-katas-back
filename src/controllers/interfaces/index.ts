@@ -4,6 +4,7 @@ export interface IUserController {
   getUsers(page: number, limit: number, id?: string): Promise<UsersResponse>
   deleteUser(id: string, isAdmin: boolean): Promise<UsersResponse>
   updateUsers(id: string, isAdmin: boolean, name: string, email: string, age: number): Promise<UsersResponse>
+  getMyInfo(userId: string): Promise<UsersResponse>
 }
 
 export interface IKataController {

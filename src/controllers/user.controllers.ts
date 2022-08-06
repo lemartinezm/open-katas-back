@@ -138,4 +138,29 @@ export class UserController implements IUserController {
       };
     }
   }
+
+  /**
+   * Endpoint to get logged user info
+   * @param userId User ID
+   * @returns {UsersResponse} Response status and user info
+   */
+  @Get('/me')
+  @SuccessResponse(200, 'User info obtained successfully')
+  @Example({
+    status: 200,
+    user: {
+      _id: '62ead98822cd04870ab7278b',
+      name: 'Martín',
+      email: 'martin@email.com',
+      age: 30,
+      katas: [
+        '62eae045d5c645439b3a026a',
+        '62eaf1e8946b8624a7901072'
+      ]
+    }
+  })
+  @Response<UsersResponse>(400, 'Something went wrong', errorExample)
+  public async getMyInfo (@Inject() userId: string): Promise<UsersResponse> {
+    return await getUserById(userId);
+  }
 }

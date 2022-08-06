@@ -41,4 +41,13 @@ userRouter.route('/')
     return res.status(response.status).send(response);
   });
 
+userRouter.route('/me')
+  .get(verifyToken, async (req: Request, res: Response) => {
+    const userId: any = res.locals.userId;
+
+    const controller = new UserController();
+    const response = await controller.getMyInfo(userId);
+    return res.status(response.status).send(response);
+  });
+
 export default userRouter;

@@ -57,7 +57,7 @@ export const loginUser = async (auth: AuthSchema): Promise <any> => {
     }
 
     // Create JWT
-    const token: string = jwt.sign({ id: userFound!._id, role: userFound!.role }, SECRET!, {
+    const token: string = jwt.sign({ id: userFound!._id }, SECRET!, {
       expiresIn: '3h'
     });
 
